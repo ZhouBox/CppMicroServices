@@ -89,12 +89,12 @@ int main(int /*argc*/, char** /*argv*/)
 #if defined (US_BUILD_SHARED_LIBS)
   for (auto name : availableBundles)
   {
-    auto bundles = framework.GetBundleContext().InstallBundles(BUNDLE_PATH + PATH_SEPARATOR + LIB_PREFIX + name + LIB_EXT);
-    installedBundles.insert(installedBundles.end(), bundles.begin(), bundles.end());
+    framework.GetBundleContext().InstallBundles(BUNDLE_PATH + PATH_SEPARATOR + LIB_PREFIX + name + LIB_EXT);
   }
-#else
-  installedBundles = framework.GetBundleContext().InstallBundles(BUNDLE_PATH + PATH_SEPARATOR + "usCoreExamplesDriver" + EXE_EXT);
 #endif
+  // gather all installed bundles
+  installedBundles = framework.GetBundleContext().GetBundles();
+
 
   std::unordered_map<std::string, Bundle> symbolicNameToBundle;
   for (auto b : installedBundles)
@@ -135,7 +135,9 @@ int main(int /*argc*/, char** /*argv*/)
 
       long int id = -1;
       ss >> id;
-      if (id > 0)
+      // converting an arbitrary string to long produces '0', however we do not
+      // want to completely ignore '0' because that is the system bundle id.
+      if (id > 0 || std::to_string(id) == idOrName)
       {
         auto bundle = framework.GetBundleContext().GetBundle(id);
         if (!bundle)
@@ -152,7 +154,10 @@ int main(int /*argc*/, char** /*argv*/)
             {
               std::cout << "Info: bundle already active" << std::endl;
             }
-            bundle.Start();
+            else
+            {
+              bundle.Start();
+            }
           }
           catch (const std::exception& e)
           {
@@ -163,7 +168,8 @@ int main(int /*argc*/, char** /*argv*/)
       else
       {
         std::vector<Bundle> bundles;
-        if (symbolicNameToBundle.find(idOrName) == symbolicNameToBundle.end())
+        std::unordered_map<std::string, Bundle>::iterator it = symbolicNameToBundle.find(idOrName);
+        if (it == symbolicNameToBundle.end())
         {
           try
           {
@@ -172,13 +178,17 @@ int main(int /*argc*/, char** /*argv*/)
 #if defined (US_BUILD_SHARED_LIBS)
             bundles = framework.GetBundleContext().InstallBundles(BUNDLE_PATH + PATH_SEPARATOR + LIB_PREFIX + idOrName + LIB_EXT);
 #else
-            bundles = framework.GetBundleContext().InstallBundles(BUNDLE_PATH + PATH_SEPARATOR + "usCoreExamplesDriver" + EXE_EXT);
+            throw std::runtime_error(idOrName +" is not a valid bundle id or name");
 #endif
           }
           catch (const std::exception& e)
           {
             std::cout << e.what() << std::endl;
           }
+        }
+        else
+        {
+          bundles.push_back(it->second);
         }
 
         for (auto& bundle : bundles)
