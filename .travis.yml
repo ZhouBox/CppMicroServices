@@ -1,9 +1,21 @@
 sudo: false
 
+env:
+  global:
+    - secure: "gx0HzttmQizBCGsjBI6Rzc4ap+SAqV/gC1JajRCNtlFvxelGOGoQJ6+qZkpJ6uRNwoEHL+fbfTBc2bgYJYNnb20DLmoVMNygbl8OHqQ6Iyaa1BNpPEpxCEBiXJgYeoYIkVgln3chjHJ18+mh5oKoHyfhSEUq0vln8YZPjQ+N0Q8="
+
 addons:
   apt:
     packages:
     - valgrind
+  coverity_scan:
+    project:
+      name: "CppMicroServices/CppMicroServices"
+      description: "Build submitted via Travis CI"
+    notification_email: sascha.zelzer@gmail.com
+    build_command_prepend: "mkdir us-cov; cd us-cov; cmake -DCMAKE_BUILD_TYPE:STRING=Release -DUS_BUILD_EXAMPLES:BOOL=ON -DUS_BUILD_TESTING:BOOL=ON -DUS_BUILD_SHARED_LIBS:BOOL=ON ../"
+    build_command:   "make -j 4"
+    branch_pattern: coverity_scan
 
 cache:
   directories:
@@ -25,12 +37,18 @@ env:
 
 branches:
   except:
-    - coverity_scan
     - gh_pages
 
 before_install:
   - bash install_cmake.sh
 
+matrix:
+  exclude:
+    - branches: coverity_scan
+  include:
+    - branches: coverity_scan
+      env: BUILD_CONFIGURATION=0
+
 script:
-  - ctest -VV -S ./cmake/usCTestScript_travis.cmake
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ctest -VV -S ./cmake/usCTestScript_travis.cmake ; fi
 
