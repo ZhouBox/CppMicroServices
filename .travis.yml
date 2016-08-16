@@ -2,12 +2,12 @@ sudo: false
 
 env:
   global:
-  - secure: "g/CtgvbfdLNOvXnAMCHxv0HDafDyjl8YJX+cym8Gni8fjcBOsbhgIJzap0yDnT8K8YrKmZvlLn53ROJq+UYBHzw+gura6y5YHouxCq3zJqCH47v+0R8BLchXd3XqQ2fqHoqg6xkX/R7fiTWXGBdtLrO4det6RqYtPNeFovqQP4U="
+    - secure: "g/CtgvbfdLNOvXnAMCHxv0HDafDyjl8YJX+cym8Gni8fjcBOsbhgIJzap0yDnT8K8YrKmZvlLn53ROJq+UYBHzw+gura6y5YHouxCq3zJqCH47v+0R8BLchXd3XqQ2fqHoqg6xkX/R7fiTWXGBdtLrO4det6RqYtPNeFovqQP4U="
 
 addons:
   apt:
     packages:
-    - valgrind
+      - valgrind
   coverity_scan:
     project:
       name: CppMicroServices/CppMicroServices
