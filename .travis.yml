@@ -2,7 +2,7 @@ sudo: false
 
 env:
   global:
-    - secure: "gx0HzttmQizBCGsjBI6Rzc4ap+SAqV/gC1JajRCNtlFvxelGOGoQJ6+qZkpJ6uRNwoEHL+fbfTBc2bgYJYNnb20DLmoVMNygbl8OHqQ6Iyaa1BNpPEpxCEBiXJgYeoYIkVgln3chjHJ18+mh5oKoHyfhSEUq0vln8YZPjQ+N0Q8="
+  - secure: "g/CtgvbfdLNOvXnAMCHxv0HDafDyjl8YJX+cym8Gni8fjcBOsbhgIJzap0yDnT8K8YrKmZvlLn53ROJq+UYBHzw+gura6y5YHouxCq3zJqCH47v+0R8BLchXd3XqQ2fqHoqg6xkX/R7fiTWXGBdtLrO4det6RqYtPNeFovqQP4U="
 
 addons:
   apt:
@@ -40,15 +40,10 @@ branches:
     - gh_pages
 
 before_install:
+  - test $TRAVIS_BRANCH != coverity_scan -o ${TRAVIS_JOB_NUMBER##*.} = 1 || exit 0
   - bash install_cmake.sh
 
-matrix:
-  exclude:
-    - branches: coverity_scan
-  include:
-    - branches: coverity_scan
-      env: BUILD_CONFIGURATION=0
-
 script:
+  - test $TRAVIS_BRANCH != coverity_scan || exit 0
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ctest -VV -S ./cmake/usCTestScript_travis.cmake ; fi
 
