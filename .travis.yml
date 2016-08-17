@@ -2,7 +2,8 @@ sudo: false
 
 env:
   global:
-    - secure: "g/CtgvbfdLNOvXnAMCHxv0HDafDyjl8YJX+cym8Gni8fjcBOsbhgIJzap0yDnT8K8YrKmZvlLn53ROJq+UYBHzw+gura6y5YHouxCq3zJqCH47v+0R8BLchXd3XqQ2fqHoqg6xkX/R7fiTWXGBdtLrO4det6RqYtPNeFovqQP4U="
+    - COVERITY_SCAN_TOKEN: 4YeBZh3O0qD3S3Y75qjkLQ
+#    - secure: "g/CtgvbfdLNOvXnAMCHxv0HDafDyjl8YJX+cym8Gni8fjcBOsbhgIJzap0yDnT8K8YrKmZvlLn53ROJq+UYBHzw+gura6y5YHouxCq3zJqCH47v+0R8BLchXd3XqQ2fqHoqg6xkX/R7fiTWXGBdtLrO4det6RqYtPNeFovqQP4U="
 
 addons:
   apt:
