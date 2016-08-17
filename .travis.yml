@@ -42,8 +42,8 @@ branches:
 
 before_install:
   - test $TRAVIS_BRANCH != coverity_scan -o ${TRAVIS_JOB_NUMBER##*.} = 1 || exit 0
+  - curl -s --form project=CppMicroServices/CppMicroServices --form token=$COVERITY_SCAN_TOKEN https://scan.coverity.com/api/upload_permitted
   - curl -s --form project="$COVERITY_SCAN_PROJECT_NAME" --form token="$COVERITY_SCAN_TOKEN" $SCAN_URL/api/upload_permitted
-  - curl -s --form project="CppMicroServices/CppMicroServices" --form token="$COVERITY_SCAN_TOKEN" https://scan.coverity.com/api/upload_permitted
   - bash install_cmake.sh
 
 script:
